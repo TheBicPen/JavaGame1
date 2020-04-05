@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DifficultyLevel"
+    android:background="@drawable/screensplash"
+    >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="190dp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/splash_icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="89dp"
+        android:background="@android:color/holo_orange_dark"
+        android:text="RedBalls:You will lose 1 life.
+ YellowBall:You Score Will increase by 5.
+  GreenBall:You Score Will increase by 10.
+
+
+
+"
+        android:textSize="20dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="42dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btneasy"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="EASY"
+            android:textSize="35dp" />
+
+
+        <Button
+            android:id="@+id/btnmedium"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="Medium"
+            android:textSize="35dp" />
+
+
+        <Button
+            android:id="@+id/btnhard"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:text="Hard"
+            android:textSize="35dp" />
+    </LinearLayout>
+</RelativeLayout>
