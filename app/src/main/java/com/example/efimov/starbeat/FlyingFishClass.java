@@ -2,40 +2,52 @@ package com.example.efimov.starbeat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.efimov.starbeat.ShmupGame.ColliderBall;
+import com.example.efimov.starbeat.ShmupGame.DrawableEntity;
 import com.example.efimov.starbeat.engine.IntegerCoords2D;
-import com.example.efimov.starbeat.engine.IntegerCoords2DBoundingBox;
+import com.example.efimov.starbeat.engine.IntegerCoords2DBox;
+
+import java.util.ArrayList;
 
 public class FlyingFishClass extends View {
 
     public Bitmap fish[] = new Bitmap[2];
-    private int fishx = 10;
-    private int fishy;
     private int fishspeed;
 
     private IntegerCoords2D canvasSize;
     private IntegerCoords2D fishCoords;
-    private IntegerCoords2DBoundingBox fishBox;
+    private IntegerCoords2DBox fishBox;
 
+    Resources res = getResources();
+    ArrayList<DrawableEntity> drawableEntities = new ArrayList<>();
 
-    private int yellwx , yellowy , yellowspeed = 14;
+    private IntegerCoords2D yellowCoords = new IntegerCoords2D(0, 0);
+    private IntegerCoords2D yellowVelocity = new IntegerCoords2D(-14, 0);
     private Paint yellowpaint = new Paint();
 
-    private int greenx , greeny , greenspeed = 16;
+
+    private IntegerCoords2D greenCoords = new IntegerCoords2D(0, 0);
+    private IntegerCoords2D greenVelocity = new IntegerCoords2D(-16, 0);
     private Paint greenpaint = new Paint();
 
 
-    private int redx , redy , redspeed = 22;
+    private IntegerCoords2D redCoords = new IntegerCoords2D(0, 0);
+    private IntegerCoords2D redVelocity = new IntegerCoords2D(-22, 0);
     private Paint redpaint = new Paint();
+
+    private ColliderBall blue = new ColliderBall(15, new IntegerCoords2D(0,0), Color.BLUE);
 
     private boolean touch = false;
 
@@ -47,14 +59,13 @@ public class FlyingFishClass extends View {
     private Bitmap life[] = new Bitmap[2];
 
 
+
     public FlyingFishClass(Context context) {
         super(context);
 
-        fish[0] = BitmapFactory.decodeResource(getResources(),R.drawable.fish1);
-        fish[1] = BitmapFactory.decodeResource(getResources(),R.drawable.fish2);
-        backgroundImage = BitmapFactory.decodeResource(getResources(),R.drawable.background);
-
-
+        fish[0] = BitmapFactory.decodeResource(res,R.drawable.fish1);
+        fish[1] = BitmapFactory.decodeResource(res,R.drawable.fish2);
+        backgroundImage = BitmapFactory.decodeResource(getResources(), R.drawable.background);
 
         yellowpaint.setColor(Color.YELLOW);
         yellowpaint.setAntiAlias(false);
@@ -78,21 +89,21 @@ public class FlyingFishClass extends View {
         life[0] = BitmapFactory.decodeResource(getResources(),R.drawable.hearts);
         life[1] = BitmapFactory.decodeResource(getResources(),R.drawable.heart_grey);
 
-        fishy = 550;
         Score = 0;
         livesRemaining = 3;
 
-        fishCoords = new IntegerCoords2D(fishx, fishy);
+        fishCoords = new IntegerCoords2D(res.getInteger(R.integer.InitialFishX), res.getInteger(R.integer.InitialFishY));
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         canvasSize = new IntegerCoords2D(getWidth(), getHeight());
 
-
+        for (DrawableEntity entity: drawableEntities){
+            entity.draw(canvas);
+        }
 
         canvas.drawBitmap(backgroundImage,0,0,null);
 
@@ -101,8 +112,8 @@ public class FlyingFishClass extends View {
         int maxFishY = canvasSize.getY() -fish[0].getHeight() * 3;
 
 
-        fishBox = new IntegerCoords2DBoundingBox(new IntegerCoords2D(fishx, minFishY), new IntegerCoords2D(fishx, maxFishY));
-        fishCoords = fishBox.getNearestInsideBox(new IntegerCoords2D(fishx, fishCoords.getY() + fishspeed));
+        fishBox = new IntegerCoords2DBox(new IntegerCoords2D(fishCoords.getX(), minFishY), new IntegerCoords2D(fishCoords.getX(), maxFishY));
+        fishCoords = fishBox.getNearestInsideBox(new IntegerCoords2D(fishCoords.getX(), fishCoords.getY() + fishspeed));
 
         fishspeed = fishspeed + 2;
 
@@ -119,43 +130,57 @@ public class FlyingFishClass extends View {
 
         //                     Yellow Ball
 
-        yellwx = yellwx - yellowspeed;
+        yellowCoords.setX(yellowCoords.getX() + yellowVelocity.getX());
 
-        if(hitBall(yellwx,yellowy))
+        if(hitBall(yellowCoords.getX(),yellowCoords.getY()))
         {
-            Score = Score +5;
-            yellwx = - 100;
+            Score += 5;
+            yellowCoords.setX(-100);
         }
 
-        if(yellwx<0)
+        if(yellowCoords.getX()<0)
         {
-            yellwx = canvasSize.getX() + 21;
-            yellowy = (int) Math.floor(Math.random() * (maxFishY - minFishY)) + minFishY;
+            yellowCoords.setX(canvasSize.getX() + 21);
+            yellowCoords.setY((int) Math.floor(Math.random() * (maxFishY - minFishY)) + minFishY);
         }
 
-        canvas.drawCircle(yellwx,yellowy,28,yellowpaint);
+        canvas.drawCircle(yellowCoords.getX(),yellowCoords.getY(),28,yellowpaint);
 
 
 
+        // blue collider ball
+        if(hitBall(blue.getPosition().getX(), blue.getPosition().getY())){
+            Score += 100;
+            blue.setPosition(new IntegerCoords2D(-10, 0));
+        }
+        if(blue.getPosition().getX() < 0){
+            int x = (canvasSize.getX() + 21);
+            int y = ((int) Math.floor(Math.random() * (maxFishY - minFishY)) + minFishY);
+            blue.setPosition(new IntegerCoords2D(x,y));
+        }
+        blue.setPosition(new IntegerCoords2D(blue.getPosition().getX() - 30, blue.getPosition().getY()));
+
+        blue.draw(canvas);
 
 
 //                     Green Ball
 
-        greenx = greenx - greenspeed;
+        greenCoords.setX(greenCoords.getX() + greenVelocity.getX());
 
-        if(hitBall(greenx,greeny))
+        if(hitBall(greenCoords.getX(),greenCoords.getY()))
         {
-            Score = Score +10;
-            greenx = - 100;
+            Score += 5;
+            greenCoords.setX(-100);
         }
 
-        if(greenx<0)
+        if(greenCoords.getX()<0)
         {
-            greenx = canvasSize.getX() + 21;
-            greeny = (int) Math.floor(Math.random() * (maxFishY - minFishY)) + minFishY;
+            greenCoords.setX(canvasSize.getX() + 21);
+            greenCoords.setY((int) Math.floor(Math.random() * (maxFishY - minFishY)) + minFishY);
         }
 
-        canvas.drawCircle(greenx,greeny,32,greenpaint);
+        canvas.drawCircle(greenCoords.getX(),greenCoords.getY(),32,greenpaint);
+
 
 
 
@@ -166,11 +191,13 @@ public class FlyingFishClass extends View {
 
 //                     Red Ball
 
-        redx = redx - redspeed;
 
-        if(hitBall(redx,redy)) {
-            redx = -100;
+        redCoords.setX(redCoords.getX() + redVelocity.getX());
+
+        if(hitBall(redCoords.getX(),redCoords.getY()))
+        {
             livesRemaining--;
+            redCoords.setX(-100);
 
             if(livesRemaining == 0)
             {
@@ -183,20 +210,18 @@ public class FlyingFishClass extends View {
             }
         }
 
-        if(redx<0)
+        if(redCoords.getX()<0)
         {
-            redx = canvasSize.getX() + 21;
-            redy = (int) Math.floor(Math.random() * (maxFishY - minFishY)) + minFishY;
+            redCoords.setX(canvasSize.getX() + 21);
+            redCoords.setY((int) Math.floor(Math.random() * (maxFishY - minFishY)) + minFishY);
         }
 
-        canvas.drawCircle(redx,redy,35,redpaint);
+        canvas.drawCircle(redCoords.getX(),redCoords.getY(),35,redpaint);
 
 
-
-
-//        canvas.drawBitmap(life[0],500,15,null);
-//        canvas.drawBitmap(life[0],580,15,null);
-//        canvas.drawBitmap(life[0],660,15,null);
+        canvas.drawBitmap(life[0],500,15,null);
+        canvas.drawBitmap(life[0],580,15,null);
+        canvas.drawBitmap(life[0],660,15,null);
     }
 
     private void drawHealth(Canvas canvas, int healthNum) {
@@ -221,7 +246,7 @@ public class FlyingFishClass extends View {
 
     public boolean hitBall(int x, int y)
     {
-        if(fishx < x && x <(fishx + fish[0].getWidth()) && fishy < y && y < (fishy + fish[0].getHeight()))
+        if(fishCoords.getX() < x && x <(fishCoords.getX() + fish[0].getWidth()) && fishCoords.getY() < y && y < (fishCoords.getY() + fish[0].getHeight()))
 
         {
             return true;

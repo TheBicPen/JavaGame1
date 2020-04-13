@@ -1,5 +1,8 @@
 package com.example.efimov.starbeat.ShmupGame;
 
+import com.example.efimov.starbeat.engine.Coordinates2D;
+import com.example.efimov.starbeat.engine.IntegerCoords2D;
+
 import Exceptions.InvalidHealthOperationException;
 
 public class CharacterEntity {
@@ -7,19 +10,17 @@ public class CharacterEntity {
     private int maxHealth;
     private float speed;
     private int angle;
-    private float positionX;
-    private float positionY;
+    private Coordinates2D coords2D;
 
     protected boolean alive = true;
 
-    public CharacterEntity(int health, int maxHealth, int posX, float posY, float speed, int angle) throws InvalidHealthOperationException {
+    public CharacterEntity(int health, int maxHealth, Coordinates2D coords, float speed, int angle) throws InvalidHealthOperationException {
 
         if(health < 1 || health > maxHealth) throw new InvalidHealthOperationException();
 
         this.health = health;
         this.maxHealth = maxHealth;
-        this.positionX = posX;
-        this.positionY = posY;
+        this.coords2D = coords;
         this.speed = speed;
         this.angle = angle;
     }

@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">FlyingFishGame</string>
+    <integer name="InitialFishX">10</integer>
+    <integer name="InitialFishY">550</integer>
+    <string name="app_name">StarBeat</string>
 </resources>

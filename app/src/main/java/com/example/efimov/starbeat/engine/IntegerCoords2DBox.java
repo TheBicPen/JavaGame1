@@ -3,20 +3,19 @@ package com.example.efimov.starbeat.engine;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-public class IntegerCoords2DBoundingBox {
+public class IntegerCoords2DBox implements Coordinates2DBox<IntegerCoords2D>{
 
     private IntegerCoords2D innerCorner;
     private IntegerCoords2D outerCorner;
 
-    public IntegerCoords2DBoundingBox(IntegerCoords2D corner1, IntegerCoords2D corner2){
+    public IntegerCoords2DBox(IntegerCoords2D corner1, IntegerCoords2D corner2){
         Log.d("box", String.format("box corners: %d %d %d %d", corner1.getX(), corner1.getY(), corner2.getX(), corner2.getY()));
         IntegerCoords2D[] corners = orderBoxCoordinates(corner1, corner2);
         this.innerCorner = corners[0];
         this.outerCorner = corners[1];
     }
 
-
-    public static IntegerCoords2D[] orderBoxCoordinates(@NonNull IntegerCoords2D boxCorner1, @NonNull IntegerCoords2D boxCorner2){
+    private static IntegerCoords2D[] orderBoxCoordinates(@NonNull IntegerCoords2D boxCorner1, @NonNull IntegerCoords2D boxCorner2){
         int minX = Math.min(boxCorner1.getX(), boxCorner2.getX());
         int maxX = Math.max(boxCorner1.getX(), boxCorner2.getX());
         int minY = Math.min(boxCorner1.getY(), boxCorner2.getY());
@@ -24,6 +23,7 @@ public class IntegerCoords2DBoundingBox {
         return new IntegerCoords2D[] { new IntegerCoords2D(minX, minY), new IntegerCoords2D(maxX, maxY)};
     }
 
+    @Override
     public boolean insideBox(@NonNull IntegerCoords2D coordinates2D) {
 
         boolean xValid = this.innerCorner.getX() <= coordinates2D.getX() && coordinates2D.getX() <= this.outerCorner.getX();
@@ -31,6 +31,7 @@ public class IntegerCoords2DBoundingBox {
         return xValid && yValid;
     }
 
+    @Override
     public IntegerCoords2D getNearestInsideBox(IntegerCoords2D coordinates2D) {
         if(insideBox(coordinates2D)) {
             return coordinates2D;

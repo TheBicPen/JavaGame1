@@ -2,9 +2,8 @@ package com.example.efimov.starbeat.engine;
 
 import android.support.annotation.NonNull;
 
-import java.lang.reflect.Array;
+public class IntegerCoords2D implements Coordinates2D<Integer>{
 
-public class IntegerCoords2D {
 
     private int x;
     private int y;
@@ -14,18 +13,25 @@ public class IntegerCoords2D {
         this.y = y;
     }
 
-    public int getX() {
+    @Override
+    public Integer getX() {
         return x;
     }
 
-    public int getY() {
+    @Override
+    public Integer getY() {
         return y;
     }
 
-    public boolean insideBox(@NonNull IntegerCoords2D boxCorner1, @NonNull IntegerCoords2D boxCorner2, @NonNull IntegerCoords2D coordinates2D) {
-        boolean xValid = (boxCorner1.x <= coordinates2D.x && coordinates2D.x <= boxCorner2.x) || (boxCorner1.x >= coordinates2D.x && coordinates2D.x >= boxCorner2.x);
-        boolean yValid = (boxCorner1.y <= coordinates2D.y && coordinates2D.y <= boxCorner2.y) || (boxCorner1.y >= coordinates2D.y && coordinates2D.y >= boxCorner2.y);
-        return xValid && yValid;
+    @Override
+    public void setX(Integer x) {
+        this.x = x;
     }
+
+    @Override
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
 
 }

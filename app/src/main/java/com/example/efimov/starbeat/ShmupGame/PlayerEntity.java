@@ -1,13 +1,15 @@
 package com.example.efimov.starbeat.ShmupGame;
 
+import com.example.efimov.starbeat.engine.Coordinates2D;
+
 import Exceptions.InvalidHealthOperationException;
 
 public class PlayerEntity extends CharacterEntity {
 
     private int numberOfLives;
 
-    public PlayerEntity(int health, int maxHealth, int posX, float posY, float speed, int angle, int lives) throws InvalidHealthOperationException {
-        super(health, maxHealth, posX, posY, speed, angle);
+    public PlayerEntity(int health, int maxHealth, Coordinates2D coords, float speed, int angle, int lives) throws InvalidHealthOperationException {
+        super(health, maxHealth, coords, speed, angle);
         this.numberOfLives = lives;
     }
 

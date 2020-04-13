@@ -1,10 +1,10 @@
 package com.example.efimov.starbeat.engine;
 
-interface Coordinates2D {
+public interface Coordinates2D<Scalar> {
 
-    boolean insideBox(Coordinates2D boxCorner1, Coordinates2D boxCorner2, Coordinates2D coordinates2D);
+    Scalar getX();
+    Scalar getY();
 
-    Coordinates2D getNearestInsideBox(Coordinates2D boxCorner1, Coordinates2D boxCorner2, Coordinates2D coordinates2D);
-
-
+    void setX(Scalar x);
+    void setY(Scalar y);
 }
