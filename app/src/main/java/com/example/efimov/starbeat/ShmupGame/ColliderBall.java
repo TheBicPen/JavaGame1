@@ -33,6 +33,12 @@ public class ColliderBall implements DrawableEntity {
     }
 
     @Override
+    public void move(IntegerCoords2D position) {
+        this.position = new IntegerCoords2D(this.position.getX() + position.getX(), this.position.getY() + position.getY());
+    }
+
+
+    @Override
     public IntegerCoords2D getSize() {
         return new IntegerCoords2D(2*radius, 2*radius);
     }
